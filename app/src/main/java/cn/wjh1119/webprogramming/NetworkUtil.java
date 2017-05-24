@@ -2,6 +2,8 @@ package cn.wjh1119.webprogramming;
 
 import android.util.Log;
 
+import com.google.gson.Gson;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -114,6 +116,17 @@ public class NetworkUtil {
         requestBuilder.method("GET", null);
         Request request = requestBuilder.build();
 
+        //同步
+        //Call对象的execute方法是同步方法，会阻塞当前线程，其返回Response对象
+//        try {
+//            Response response = okHttpClient.newCall(request).execute();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
+        //异步
+        //要想异步执行网络请求，需要执行Call对象的enqueue方法，该方法接收一个okhttp3.Callback对象，
+        // enqueue方法不会阻塞当前线程，会新开一个工作线程
         Call call = okHttpClient.newCall(request);
         call.enqueue(new Callback() {
             @Override
@@ -123,14 +136,21 @@ public class NetworkUtil {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                final Gson gson = new Gson();
                 if (null != response.cacheResponse()) {
                     String str = response.body().string();
+
+                    //使用Gson解析Json数据
+//                    MovieModel movieModel = gson.fromJson(response.body().charStream(), MovieModel.class);
+
                     handler.obtainMessage(MSG_SHOW, "successed to download Json \n").sendToTarget();
                     Log.i("Okhttp", "cache---" + str.toString());
+                    response.body().close();
                 } else {
                     String str = response.body().string();
                     handler.obtainMessage(MSG_SHOW, "successed to download Json \n").sendToTarget();
                     Log.i("Okhttp", "network---" + str);
+                    response.body().close();
                 }
             }
         });
