@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">WebProgramming</string>
+    <string name="title_activity_get">GetActivity</string>
+    <string name="text_main_get">Get</string>
+    <string name="btntext_get_httpurlconnection">使用httpURLConnection</string>
+    <string name="btntext_get_okhttp">使用OkHttp</string>
+    <string name="btntext_get_retrofit">使用retrofit</string>
+</resources>
